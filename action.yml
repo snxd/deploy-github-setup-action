@@ -1,0 +1,45 @@
+name: Deploy Setup Action
+description: Download direct tools
+inputs:
+  solsta_client_id:
+    description: Client ID to authenticate usage of Solid State Networks console tools
+    required: true
+    default: ""
+  solsta_client_secret:
+    description: Secret Key to authenticate usage of Solid State Networks console tools
+    required: true
+    default: ""
+  console_version:
+    description: Version of Solsta Console Tools to use
+    required: true
+    default: "6.1.1.12"
+  scripts_version:
+    description: Version of Solsta Deploy Scripts to use
+    required: true
+    default: "3.7.16"
+
+outputs:
+  result:
+    description: The state of the action, if processes completed successfully
+
+runs:
+  using: composite
+  args:
+    - ${{ inputs.solsta_client_id }}
+    - ${{ inputs.solsta_client_secret }}
+    - ${{ inputs.console_version }}
+    - ${{ inputs.scripts_version }}
+  steps:
+  
+  steps:
+    - name: Cache console tools
+      uses: actions/cache@v3
+      with:
+        path: solsta_work/solsta_console/${{ github.event.inputs.console_version }}
+        key: direct-${{ github.event.inputs.console_version }}
+        restore-keys: direct-${{ github.event.inputs.console_version }
+    - name: Download dependencies
+      runs: getdeps.sh
+branding:
+  icon: "download-cloud"
+  color: "yellow"
