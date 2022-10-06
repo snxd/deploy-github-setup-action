@@ -15,14 +15,13 @@ Here is an example YAML Fragment in the steps section of a build:
 
 ```yaml
     steps:
-    - name: Promote a Release from Dev to QA
+    - name: Setup Solsta Dependencies
       uses: snxd/deploy-github-setup-action@main
       with:
-        console_version: '6.1.1.12'
-        scripts_version: '3.7.16'
-        source_product: 'Emutil'
-        source_environment: 'Java'
-        source_repository: 'Dev'
+        console_version: '6.1.2.51'
+        scripts_version: '3.7.18'
+        solsta_client_id: 'solsta client id'
+        solsta_client_secret: 'solsta client secret'
 ```
 
 ## License

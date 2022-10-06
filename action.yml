@@ -12,11 +12,11 @@ inputs:
   console_version:
     description: Version of Solsta Console Tools to use
     required: true
-    default: "6.1.1.12"
+    default: "6.1.2.51"
   scripts_version:
     description: Version of Solsta Deploy Scripts to use
     required: true
-    default: "3.7.16"
+    default: "3.7.18"
 
 outputs:
   result:
@@ -24,22 +24,54 @@ outputs:
 
 runs:
   using: composite
-  args:
-    - ${{ inputs.solsta_client_id }}
-    - ${{ inputs.solsta_client_secret }}
-    - ${{ inputs.console_version }}
-    - ${{ inputs.scripts_version }}
   steps:
-  
-  steps:
+    - name: Download deploy scripts
+      shell: bash
+      run: |
+        mkdir -p solsta_work
+        cd solsta_work
+        rm -f *.py
+        rm -f deploy-scripts-${{ inputs.scripts_version }}.zip
+        wget https://releases.snxd.com/deploy-scripts-${{ inputs.scripts_version }}.zip
+        unzip deploy-scripts-${{ inputs.scripts_version }}.zip
+        cd ..
+    - name: Setup python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+        architecture: 'x64'
+    - name: Create python venv
+      shell: bash
+      run: python3 -m venv solsta_work/venv
+    - name: Install dotnet
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: '6.0.x'
+    - name: Install python prerequisites
+      shell: bash
+      run: |
+        solsta_work/venv/bin/python -m pip install -r solsta_work/requirements.txt
+    - name: Write console.json
+      shell: bash
+      run: |
+        # Generate console credential file from env vars
+        echo "{\"consoleCredentials\":{\"audience\":\"https://axis.snxd.com/\",\"clientId\":\"${{ inputs.solsta_client_id }}\",\"clientSecret\":\"${{ inputs.solsta_client_secret }}\",\"grant\":\"clientCredentials\",\"scope\":\"d4tv1\"}}"  > solsta_work/client_credentials.json
     - name: Cache console tools
       uses: actions/cache@v3
       with:
-        path: solsta_work/solsta_console/${{ github.event.inputs.console_version }}
-        key: direct-${{ github.event.inputs.console_version }}
-        restore-keys: direct-${{ github.event.inputs.console_version }
-    - name: Download dependencies
-      runs: getdeps.sh
+        path: solsta_work/solsta_console/${{ inputs.console_version }}
+        key: direct-${{ inputs.console_version }}
+        restore-keys: direct-${{ inputs.console_version }}
+    - name: Download Console Tools
+      shell: bash
+      run: |
+        # Download the latest SSN Console Tools if necessary
+        cd solsta_work
+        if [ ! -d "solsta_console/${{ inputs.console_version }}" ]; then 
+          venv/bin/python direct_get.py --overwrite --version="${{ inputs.console_version }}" --target_directory=solsta_console/${{ inputs.console_version }}/ --console_credentials=client_credentials.json --component=console
+        fi
+        cd ..
+
 branding:
   icon: "download-cloud"
   color: "yellow"
