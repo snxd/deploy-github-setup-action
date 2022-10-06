@@ -25,6 +25,9 @@ outputs:
 runs:
   using: composite
   steps:
+    - name: Install system dependencies
+      shell: bash
+      run: sudo apt-get -y install zip wget
     - name: Download deploy scripts
       shell: bash
       run: |
