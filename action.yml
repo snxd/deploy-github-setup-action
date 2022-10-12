@@ -27,53 +27,63 @@ runs:
   steps:
     - name: Install system dependencies
       shell: bash
-      run: sudo apt-get -y install zip wget
+      run: sudo apt-get -y install p7zip-full wget
+      
+    - name: Create work directory
+      shell: bash
+      run: mkdir -p solsta_work
+    
     - name: Download deploy scripts
       shell: bash
       run: |
-        mkdir -p solsta_work
-        cd solsta_work
         rm -f *.py
         rm -f deploy-scripts-${{ inputs.scripts_version }}.zip
         wget https://releases.snxd.com/deploy-scripts-${{ inputs.scripts_version }}.zip
-        unzip deploy-scripts-${{ inputs.scripts_version }}.zip
-        cd ..
+        7z x deploy-scripts-${{ inputs.scripts_version }}.zip
+      working-directory: solsta_work
+      
     - name: Setup python
       uses: actions/setup-python@v4
       with:
         python-version: '3.9'
         architecture: 'x64'
+        
     - name: Create python venv
       shell: bash
       run: python3 -m venv solsta_work/venv
+      
     - name: Install dotnet
       uses: actions/setup-dotnet@v2
       with:
         dotnet-version: '6.0.x'
+        
     - name: Install python prerequisites
       shell: bash
-      run: |
-        solsta_work/venv/bin/python -m pip install -r solsta_work/requirements.txt
+      run: venv/bin/python -m pip install -r requirements.txt
+      working-directory: solsta_work
+      
     - name: Write console.json
       shell: bash
       run: |
         # Generate console credential file from env vars
-        echo "{\"consoleCredentials\":{\"audience\":\"https://axis.snxd.com/\",\"clientId\":\"${{ inputs.solsta_client_id }}\",\"clientSecret\":\"${{ inputs.solsta_client_secret }}\",\"grant\":\"clientCredentials\",\"scope\":\"d4tv1\"}}"  > solsta_work/client_credentials.json
+        echo "{\"consoleCredentials\":{\"audience\":\"https://axis.snxd.com/\",\"clientId\":\"${{ inputs.solsta_client_id }}\",\"clientSecret\":\"${{ inputs.solsta_client_secret }}\",\"grant\":\"clientCredentials\",\"scope\":\"d4tv1\"}}"  > client_credentials.json
+      working-directory: solsta_work
+        
     - name: Cache console tools
       uses: actions/cache@v3
       with:
         path: solsta_work/solsta_console/${{ inputs.console_version }}
         key: direct-${{ inputs.console_version }}
         restore-keys: direct-${{ inputs.console_version }}
+
     - name: Download Console Tools
       shell: bash
+      working-directory: solsta_work
       run: |
         # Download the latest SSN Console Tools if necessary
-        cd solsta_work
         if [ ! -d "solsta_console/${{ inputs.console_version }}" ]; then 
           venv/bin/python direct_get.py --overwrite --version="${{ inputs.console_version }}" --target_directory=solsta_console/${{ inputs.console_version }}/ --console_credentials=client_credentials.json --component=console
         fi
-        cd ..
 
 branding:
   icon: "download-cloud"
