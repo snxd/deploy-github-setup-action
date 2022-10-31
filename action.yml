@@ -26,20 +26,31 @@ runs:
   using: composite
   steps:
     - name: Install system dependencies
+      if: runner.os == 'Linux' || runner.os == 'macOS'
       shell: bash
       run: sudo apt-get -y install p7zip-full wget
       
     - name: Create work directory
       shell: bash
-      run: mkdir -p solsta_work
-    
-    - name: Download deploy scripts
-      shell: bash
       run: |
         rm -f *.py
         rm -f deploy-scripts-${{ inputs.scripts_version }}.zip
+        mkdir -p solsta_work
+      
+    - name: Download deploy scripts (Linux/OSX)
+      if: runner.os == 'Linux' || runner.os == 'macOS'
+      shell: bash
+      run: |
         wget https://releases.snxd.com/deploy-scripts-${{ inputs.scripts_version }}.zip
         7z x deploy-scripts-${{ inputs.scripts_version }}.zip
+      working-directory: solsta_work
+      
+    - name: Download deploy scripts (Windows)
+      if: runner.os == 'Windows'
+      shell: powershell
+      run: |
+        wget -o "deploy-scripts-${{ inputs.scripts_version }}.zip" https://releases.snxd.com/deploy-scripts-${{ inputs.scripts_version }}.zip
+        Expand-Archive -Force -LiteralPath "deploy-scripts-${{ inputs.scripts_version }}.zip" -DestinationPath "." 
       working-directory: solsta_work
       
     - name: Setup python
@@ -52,6 +63,16 @@ runs:
       shell: bash
       run: python3 -m venv solsta_work/venv
       
+    - name: Set Python venv path (Linux/macOS)
+      if: runner.os != 'Windows'
+      shell: bash
+      run: echo "VENV_PATH=venv/bin" >> $GITHUB_ENV
+
+    - name: Set Python venv path (Windows)
+      if: runner.os == 'Windows'
+      shell: bash
+      run: echo "VENV_PATH=venv/Scripts" >> $GITHUB_ENV
+
     - name: Install dotnet
       uses: actions/setup-dotnet@v2
       with:
@@ -59,7 +80,7 @@ runs:
         
     - name: Install python prerequisites
       shell: bash
-      run: venv/bin/python -m pip install -r requirements.txt
+      run: ${{ env.VENV_PATH }}/python -m pip install -r requirements.txt
       working-directory: solsta_work
       
     - name: Write console.json
@@ -77,12 +98,13 @@ runs:
         restore-keys: direct-${{ inputs.console_version }}
 
     - name: Download Console Tools
+      if: runner.os == 'Windows'
       shell: bash
       working-directory: solsta_work
       run: |
         # Download the latest SSN Console Tools if necessary
         if [ ! -d "solsta_console/${{ inputs.console_version }}" ]; then 
-          venv/bin/python direct_get.py --overwrite --version="${{ inputs.console_version }}" --target_directory=solsta_console/${{ inputs.console_version }}/ --console_credentials=client_credentials.json --component=console
+          ${{ env.VENV_PATH }}/python direct_get.py --overwrite --version="${{ inputs.console_version }}" --target_directory=solsta_console/${{ inputs.console_version }}/ --console_credentials=client_credentials.json --component=console
         fi
 
 branding:
