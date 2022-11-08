@@ -63,16 +63,6 @@ runs:
       shell: bash
       run: python3 -m venv solsta_work/venv
       
-    - name: Set Python venv path (Linux/macOS)
-      if: runner.os != 'Windows'
-      shell: bash
-      run: echo "VENV_PATH=venv/bin" >> $GITHUB_ENV
-
-    - name: Set Python venv path (Windows)
-      if: runner.os == 'Windows'
-      shell: bash
-      run: echo "VENV_PATH=venv/Scripts" >> $GITHUB_ENV
-
     - name: Install dotnet
       uses: actions/setup-dotnet@v2
       with:
@@ -80,7 +70,7 @@ runs:
         
     - name: Install python prerequisites
       shell: bash
-      run: ${{ env.VENV_PATH }}/python -m pip install -r requirements.txt
+      run: python3 -m pip install -r requirements.txt
       working-directory: solsta_work
       
     - name: Write console.json
@@ -104,7 +94,7 @@ runs:
       run: |
         # Download the latest SSN Console Tools if necessary
         if [ ! -d "solsta_console/${{ inputs.console_version }}" ]; then 
-          ${{ env.VENV_PATH }}/python direct_get.py --overwrite --version="${{ inputs.console_version }}" --target_directory=solsta_console/${{ inputs.console_version }}/ --console_credentials=client_credentials.json --component=console
+          python3 direct_get.py --overwrite --version="${{ inputs.console_version }}" --target_directory=solsta_console/${{ inputs.console_version }}/ --console_credentials=client_credentials.json --component=console
         fi
 
 branding:
