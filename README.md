@@ -2,7 +2,7 @@
 
 This project is a GitHub Action that uses Solid State Networks tools and services.  
 
-The action is compatible with Windows, Linux, and OSX runners.  Windows self-hosted runners require git-bash (https://git-scm.com/) in the %PATH%.
+The action is compatible with Windows, Linux, and OSX github runners, as well as Windows and OSX hosted runners.  Windows self-hosted runners require git-bash (https://git-scm.com/) in the %PATH%.
 
 ## Variables
 
