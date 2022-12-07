@@ -18,7 +18,7 @@ Here is an example YAML Fragment in the steps section of a build:
 ```yaml
     steps:
     - name: Setup Solsta Dependencies
-      uses: snxd/deploy-github-setup-action@main
+      uses: snxd/deploy-github-setup-action@v2
       with:
         console_version: '6.1.2.51'
         scripts_version: '3.7.18'
