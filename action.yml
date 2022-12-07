@@ -16,7 +16,7 @@ inputs:
   scripts_version:
     description: Version of Solsta Deploy Scripts to use
     required: true
-    default: "3.7.18"
+    default: "3.7.24"
 
 outputs:
   result:
@@ -72,7 +72,6 @@ runs:
         restore-keys: direct-${{ inputs.console_version }}
 
     - name: Download Console Tools
-      if: runner.os == 'Windows'
       shell: bash
       working-directory: solsta_work
       run: |
