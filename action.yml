@@ -61,7 +61,7 @@ runs:
       shell: bash
       run: |
         # Generate console credential file from env vars
-        echo "{\"consoleCredentials\":{\"audience\":\"https://axis.snxd.com/\",\"clientId\":\"${{ inputs.solsta_client_id }}\",\"clientSecret\":\"${{ inputs.solsta_client_secret }}\",\"grant\":\"clientCredentials\",\"scope\":\"d4tv1\"}}"  > client_credentials.json
+        echo "{\"consoleCredentials\":{\"audience\":\"https://axis.snxd.com/\",\"clientId\":\"${{ inputs.solsta_client_id }}\",\"clientSecret\":\"${{ inputs.solsta_client_secret }}\",\"grant\":\"clientCredentials\"}}"  > client_credentials.json
       working-directory: solsta_work
         
     - name: Cache console tools
