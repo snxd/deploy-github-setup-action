@@ -22,8 +22,8 @@ Here is an example YAML Fragment in the steps section of a build:
       with:
         console_version: '6.1.2.84'
         scripts_version: '3.7.30'
-        solsta_client_id: 'solsta client id'
-        solsta_client_secret: 'solsta client secret'
+        solsta_client_id: ${{ secrets.SOLSTA_CLIENT_ID }}
+        solsta_client_secret: ${{ secrets.SOLSTA_CLIENT_SECRET }}
 ```
 
 ## License
