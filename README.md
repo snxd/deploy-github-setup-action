@@ -20,11 +20,11 @@ Here is an example YAML Fragment in the steps section of a build:
     - name: Setup Solsta Dependencies
       uses: snxd/deploy-github-setup-action@v2
       with:
-        console_version: '6.1.2.84'
-        scripts_version: '3.7.30'
+        console_version: '7.1.51'
+        scripts_version: '3.9.3'
         solsta_client_id: ${{ secrets.SOLSTA_CLIENT_ID }}
         solsta_client_secret: ${{ secrets.SOLSTA_CLIENT_SECRET }}
 ```
 
 ## License
-(C) 2022 Solid State Networks, LLC.  All Rights Reserved.
+(C) 2024 Solid State Networks, LLC.  All Rights Reserved.

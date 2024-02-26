@@ -12,11 +12,11 @@ inputs:
   console_version:
     description: Version of Solsta Console Tools to use
     required: true
-    default: "6.1.2.84"
+    default: "7.1.51"
   scripts_version:
     description: Version of Solsta Deploy Scripts to use
     required: true
-    default: "3.7.30"
+    default: "3.9.3"
 
 outputs:
   result:
@@ -50,7 +50,7 @@ runs:
     - name: Install dotnet
       uses: actions/setup-dotnet@v2
       with:
-        dotnet-version: '6.0.x'
+        dotnet-version: '8.0.x'
         
     - name: Install python prerequisites
       shell: bash
