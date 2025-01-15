@@ -16,7 +16,7 @@ inputs:
   scripts_version:
     description: Version of Solsta Deploy Scripts to use
     required: true
-    default: "3.10.0"
+    default: "3.11.0"
 
 outputs:
   result:
@@ -35,7 +35,7 @@ runs:
     - name: Setup python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.9'
+        python-version: '3.12'
         architecture: 'x64'
         
     - name: Download deploy scripts

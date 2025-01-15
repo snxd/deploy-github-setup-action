@@ -18,13 +18,13 @@ Here is an example YAML Fragment in the steps section of a build:
 ```yaml
     steps:
     - name: Setup Solsta Dependencies
-      uses: snxd/deploy-github-setup-action@v4
+      uses: snxd/deploy-github-setup-action@v5
       with:
         console_version: '7.2.49'
-        scripts_version: '3.10.0'
+        scripts_version: '3.11.0'
         solsta_client_id: ${{ secrets.SOLSTA_CLIENT_ID }}
         solsta_client_secret: ${{ secrets.SOLSTA_CLIENT_SECRET }}
 ```
 
 ## License
-(C) 2024 Solid State Networks, LLC.  All Rights Reserved.
+(C) 2025 Solid State Networks, LLC.  All Rights Reserved.
