@@ -65,7 +65,7 @@ runs:
       working-directory: solsta_work
         
     - name: Cache console tools
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: solsta_work/solsta_console/${{ inputs.console_version }}
         key: direct-${{ inputs.console_version }}
