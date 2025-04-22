@@ -5,7 +5,7 @@ env:
 jobs:
   verify-commits:
     name: Check Commit Signatures
-    runs-on: [self-hosted, build]
+    runs-on: [ubuntu-latest]
 
     steps:
       - name: Checkout repository
